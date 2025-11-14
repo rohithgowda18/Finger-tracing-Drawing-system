@@ -1,175 +1,159 @@
-# Air Canvas: Interactive Drawing with Hand Gestures
+# Air Canvas - Hand Gesture Drawing System
 
-## Table of Contents
-- [Overview](#overview)
-- [Demo](#demo)
-- [Key Features](#key-features)
-- [Technical Requirements](#technical-requirements)
-- [Installation Guide](#installation-guide)
-- [Usage Instructions](#usage-instructions)
-- [How It Works](#how-it-works)
-- [Project Structure](#project-structure)
-- [Troubleshooting](#troubleshooting)
-- [Future Enhancements](#future-enhancements)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-
-## Overview
-
-Air Canvas is an interactive computer vision application that enables users to draw in the air using hand gestures. By leveraging OpenCV for image processing and MediaPipe for precise hand tracking, this application creates a virtual canvas where your index finger becomes the brush, controlled entirely through natural hand movements.
-
-## Demo
-
-### Screenshots
-
-![Air Canvas Hand Tracking](assets/SS-1.png)
-
-![Air Canvas Drawing](assets/SS-2.png)
-
-![Air Canvas Color Picker](assets/SS-3.png)
-
-![Air Canvas Example](assets/air_canvas_1747660542.png)
-
-### Video Demo
-[Watch the Air Canvas in action](https://youtube.com/watch?v=your-video-id)
-
-## Key Features
-
-- **Intuitive Drawing Interface**: Draw naturally using hand gestures captured by your webcam
-- **Gesture Control**: Toggle drawing on/off with simple pinch gestures
-- **Color Selection**: Choose from a wide range of colors via an interactive color picker
-- **Brush Size Adjustment**: Customize your drawing experience with adjustable brush sizes
-- **Canvas Management**: Clear your canvas or save your creations as PNG files
-- **Smooth Drawing Experience**: Optimized tracking algorithms for fluid and accurate drawing
-
-## Technical Requirements
-
-- **Python**: 3.8 or higher
-- **Libraries**:
-  - [OpenCV](https://opencv.org/): For image processing and canvas management
-  - [MediaPipe](https://mediapipe.dev/): For hand tracking and gesture recognition
-  - [NumPy](https://numpy.org/): For numerical operations
-  - [tkinter](https://docs.python.org/3/library/tkinter.html): For the color picker interface
-- **Hardware**: Webcam with clear resolution
-
-## Installation Guide
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/Air-Canvas-using-ML.git
-cd Air-Canvas-using-ML
-```
-
-### 2. Set Up a Python Environment (Optional but Recommended)
-
-```bash
-python -m venv venv
-# On Windows
-venv\Scripts\activate
-# On macOS/Linux
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## Usage Instructions
-
-### Starting the Application
-
-```bash
-python code/air_canvas.py
-```
-
-### Interface Controls
-
-#### Gesture Controls
-- **Drawing Mode**: When your hand is detected, drawing is toggled based on the distance between your thumb and index finger
-  - **Pinch Open** (≥ 40px distance): Drawing enabled
-  - **Pinch Closed** (< 40px distance): Drawing disabled
-- **Cursor**: Your index fingertip position is tracked and displayed as a black circle
-
-#### On-Screen Buttons
-- **CLEAR**: Resets the canvas to blank
-- **COLOR**: Opens a color picker dialog to select a new drawing color
-- **SAVE**: Saves your artwork as a timestamped PNG file
-
-#### Keyboard Controls
-- **+** or **=**: Increase brush size
-- **-**: Decrease brush size
-- **q**: Quit the application
-
-## How It Works
-
-### Technical Architecture
-
-1. **Video Capture**: Webcam feed is captured and processed frame by frame
-2. **Hand Detection**: MediaPipe's hand tracking solution identifies hand landmarks in real-time
-3. **Gesture Recognition**: 
-   - The positions of the index fingertip and thumb tip are tracked
-   - The distance between these points determines if drawing is enabled
-4. **Drawing Mechanism**:
-   - A deque data structure stores points for each color
-   - When drawing is enabled, the tracked position is added to the current color's deque
-   - Lines are drawn between consecutive points in the deque
-5. **Dual Canvas System**:
-   - A persistent canvas maintains the complete drawing
-   - A temporary canvas is used for display in each frame
-
-### Interaction Flow
-
-1. User's hand is detected and tracked in the webcam feed
-2. Index fingertip position is smoothed to reduce jitter
-3. Pinch gesture toggles drawing mode on/off
-4. When drawing is enabled, the path of the index finger is traced on the canvas
-5. On-screen buttons provide additional functionality
-6. Drawings can be saved as PNG files with timestamps
+A real-time air canvas drawing application using hand gesture recognition powered by MediaPipe and TensorFlow.
 
 ## Project Structure
 
-```
-Air-Canvas-using-ML/
+
+Drawing-System/
 ├── code/
-│   ├── air_canvas.py       # Main application code
-│   └── color_palette.py   # Color picker implementation
-├── assets/                # Directory for project assets
-│   ├── SS-1.png          # Screenshot 1
-│   ├── SS-2.png          # Screenshot 2
-│   ├── SS-3.png          # Screenshot 3
-│   └── air_canvas_*.png  # Drawing examples
-├── requirements.txt       # Project dependencies
-├── README.md              # Project documentation
-└── air_canvas_*.png       # Saved drawing examples
-```
+│   ├── air_canvas.py          # Main drawing application
+│   ├── train_model.py         # Model training script
+│   ├── color_palette.py       # Color picker utility
+│   ├── gesture_model.h5       # Trained gesture recognition model
+│   └── class_mapping.json     # Gesture class labels
+├── dataset/
+│   ├── Bye/                   # Training images for "Bye" gesture
+│   ├── Hello/                 # Training images for "Hello" gesture
+│   ├── No/                    # Training images for "No" gesture
+│   ├── Perfect/               # Training images for "Perfect" gesture
+│   ├── Thank You/             # Training images for "Thank You" gesture
+│   └── Yes/                   # Training images for "Yes" gesture
+└── README.md
+
+
+## Installation
+
+### Prerequisites
+- Python 3.8+
+- Webcam
+- Windows/Mac/Linux
+
+### Install Dependencies
+
+bash
+pip install opencv-python mediapipe tensorflow numpy
+
+
+Or use the requirements file:
+bash
+pip install -r requirements.txt
+
+
+## Usage
+
+### 1. Train the Gesture Recognition Model
+
+bash
+python code/train_model.py
+
+
+This will:
+- Load images from dataset/ folder
+- Train a CNN model on gesture images (80% train / 20% validation)
+- Save gesture_model.h5 and class_mapping.json to code/
+- Takes ~10 epochs (varies by hardware)
+
+*Expected output:*
+
+Using dataset at: ...
+Model saved to ...
+
+
+### 2. Run the Air Canvas Application
+
+bash
+python code/air_canvas.py
+
+
+*Controls:*
+
+| Gesture | Action |
+|---------|--------|
+| *Hello* | Enable drawing |
+| *No* | Disable drawing |
+| *Perfect* | Increase brush size |
+| *Bye* | Decrease brush size |
+| *Yes* | Save canvas |
+| *Thumb-Index Pinch* | Draw (fallback when model unavailable) |
+| *Press "CLEAR" button* | Clear canvas |
+| *Press "COLOR" button* | Open color picker |
+| *Press "SAVE" button* | Save drawing |
+| *Press 'q'* | Exit application |
+
+### 3. Drawing Tips
+
+- *Index finger extended*: Marks drawing position
+- *Index-only pose* (when ML model unavailable): Enables drawing
+- *Thumb-to-index pinch*: Fallback drawing trigger if gesture model fails
+- Point your index finger at the screen to draw
+- Use gestures to toggle drawing on/off and adjust brush size
+
+## Training Your Own Model
+
+1. *Collect gesture images* and organize them in dataset/ folders:
+   
+   dataset/
+   ├── Bye/
+   ├── Hello/
+   ├── No/
+   ├── Perfect/
+   ├── Thank You/
+   └── Yes/
+   
+
+2. *Run training*:
+   bash
+   python code/train_model.py
+   
+
+3. *Use the trained model* in Air Canvas automatically
+
+## Model Architecture
+
+- *Input*: 128×128 RGB images
+- *Layers*:
+  - Conv2D(32) + MaxPool → Conv2D(64) + MaxPool → Conv2D(128) + MaxPool
+  - Flatten → Dense(128, relu, dropout=0.4) → Dense(num_classes, softmax)
+- *Training*: Adam optimizer, learning rate 1e-4, 10 epochs
+- *Data augmentation*: Rotation, zoom, shifts, horizontal flip
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Hand not detected | Ensure adequate lighting and position your hand clearly in the webcam's view |
-| Unstable tracking | Try adjusting your distance from the camera (typically 1-2 feet works best) |
-| Color picker not working | Verify tkinter is properly installed with your Python distribution |
-| Drawing appears jerky | Slow down your hand movements for smoother lines |
-| Application crashes | Check webcam permissions and ensure all dependencies are installed correctly |
+### "No gesture model found"
+- Train the model first: python code/train_model.py
+- Ensure dataset folder exists with gesture images
 
-## Future Enhancements
+### Application won't start
+- Check camera is connected and not in use
+- Verify all dependencies installed: pip install opencv-python mediapipe tensorflow
 
-- Multi-hand support for collaborative drawing
-- Additional drawing tools (shapes, erasers)
-- Background customization options
-- Recording and replay of drawing sessions
-- Export to different file formats
+### Drawing not working
+- Ensure your index finger is clearly visible to the camera
+- Try the fallback: pinch thumb and index finger to draw
+- Increase ambient lighting for better hand detection
+
+### Model training fails
+- Verify dataset folder structure with gesture subdirectories
+- Check image format (JPEG, PNG supported)
+- Ensure minimum images per class (~50-100 recommended)
+
+## Performance
+
+- *FPS*: ~25-30 (depends on hardware)
+- *Latency*: ~50-100ms (hand detection + gesture prediction)
+- *Memory*: ~500MB-1GB during training, ~200MB during inference
+
+## File Descriptions
+
+| File | Purpose |
+|------|---------|
+| air_canvas.py | Main drawing app with real-time hand detection and gesture recognition |
+| train_model.py | CNN training pipeline with data augmentation |
+| color_palette.py | Tkinter color picker widget |
+| gesture_model.h5 | Trained Keras model for gesture classification |
+| class_mapping.json | Gesture class index-to-name mapping |
 
 ## License
 
-This project is released under the MIT License.
-
-## Acknowledgments
-
-- The [MediaPipe](https://mediapipe.dev/) team for their exceptional hand tracking library
-- [OpenCV](https://opencv.org/) community for their powerful computer vision tools
-- Contributors to this project for their valuable input and feedback 
+Open source for educational purposes.
